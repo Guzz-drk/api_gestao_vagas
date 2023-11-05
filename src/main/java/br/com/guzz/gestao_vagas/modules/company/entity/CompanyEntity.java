@@ -1,4 +1,4 @@
-package br.com.guzz.gestao_vagas.modules.candidate.entity;
+package br.com.guzz.gestao_vagas.modules.company.entity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,13 +21,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 
-@Entity(name = "candidate")
-public class CandidateEntity {
+@Entity(name = "company")
+public class CompanyEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @NotBlank
     private String name;
 
     @NotBlank
@@ -40,9 +41,9 @@ public class CandidateEntity {
     @Length(min = 5, max = 100, message = "O campo [password] deve conter entre (5) e (100) caracteres")
     private String password;
 
-    private String description;
+    private String webSite;
 
-    private String curriculum;
+    private String description;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
