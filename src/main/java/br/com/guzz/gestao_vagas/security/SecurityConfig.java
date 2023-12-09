@@ -20,14 +20,18 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> {
             auth.requestMatchers("/candidate/").permitAll()
                     .requestMatchers("/company/").permitAll()
-                    .requestMatchers("/auth/company").permitAll();
+                    .requestMatchers("/auth/company").permitAll()
+                    .requestMatchers("/candidate/auth").permitAll()
+                    .requestMatchers("/actuator").permitAll()
+                    .requestMatchers("/actuator/*").permitAll()
+                    .requestMatchers("/actuator/metrics/*").permitAll();
             auth.anyRequest().authenticated();
         }).addFilterBefore(securityFilter, BasicAuthenticationFilter.class);
         return http.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
