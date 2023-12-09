@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.guzz.gestao_vagas.exceptions.UserNotFoundException;
 import br.com.guzz.gestao_vagas.modules.company.dto.AuthCompanyDTO;
+import br.com.guzz.gestao_vagas.modules.company.dto.AuthCompanyResponseDTO;
 import br.com.guzz.gestao_vagas.modules.company.repository.CompanyRepository;
 import br.com.guzz.gestao_vagas.providers.JWTProvider;
 
@@ -27,7 +28,7 @@ public class AuthCompanyUseCase {
     @Autowired
     private JWTProvider jwtProvider;
 
-    public String execute(AuthCompanyDTO authCompanyDTO) throws AuthenticationException{
+    public AuthCompanyResponseDTO execute(AuthCompanyDTO authCompanyDTO) throws AuthenticationException{
         var company = this.companyRepository.findByUsername(authCompanyDTO.getUsername()).orElseThrow(() -> {
             throw new UserNotFoundException();
         });
@@ -38,8 +39,8 @@ public class AuthCompanyUseCase {
             throw new AuthenticationException();
         }
 
-        var token = jwtProvider.createToken(company);
+        var authCompanyResponseDTO = jwtProvider.createToken(company);
 
-        return token;
+        return authCompanyResponseDTO;
     }
 }

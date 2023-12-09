@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import br.com.guzz.gestao_vagas.modules.candidate.dto.AuthCandidateRequestDTO;
 import br.com.guzz.gestao_vagas.modules.candidate.dto.AuthCandidateResponseDTO;
 import br.com.guzz.gestao_vagas.modules.candidate.repository.CandidateRepository;
-import br.com.guzz.gestao_vagas.providers.JWTProvider;
+import br.com.guzz.gestao_vagas.providers.JWTCandidateProvider;
 
 @Service
 public class AuthCandidateUseCase {
@@ -22,7 +22,7 @@ public class AuthCandidateUseCase {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private JWTProvider jwtProvider;
+    private JWTCandidateProvider jwtCandidateProvider;
 
     public AuthCandidateResponseDTO execute(AuthCandidateRequestDTO authCandidateRequestDTO) throws AuthenticationException{
         var candidate = this.candidateRepository.findByUsername(authCandidateRequestDTO.username()).orElseThrow(() -> {
@@ -32,7 +32,7 @@ public class AuthCandidateUseCase {
         if(!passwordMatches){
             throw new AuthenticationException();
         }
-        var authCandidateResponse = jwtProvider.createTokenCandidate(candidate);
+        var authCandidateResponse = jwtCandidateProvider.createTokenCandidate(candidate);
 
         return authCandidateResponse;
     }

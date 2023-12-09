@@ -12,19 +12,19 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-import br.com.guzz.gestao_vagas.modules.company.dto.AuthCompanyResponseDTO;
-import br.com.guzz.gestao_vagas.modules.company.entity.CompanyEntity;
+import br.com.guzz.gestao_vagas.modules.candidate.dto.AuthCandidateResponseDTO;
+import br.com.guzz.gestao_vagas.modules.candidate.entity.CandidateEntity;
 
 @Service
-public class JWTProvider {
+public class JWTCandidateProvider {
 
-    @Value("${security.token.secret}")
-    private String secretKey;
+    @Value("${security.token.secret.candidate}")
+    private String secretKeyCandidate;
 
-    public DecodedJWT validateToken(String token) {
+    public DecodedJWT validateTokenCandidate(String token) {
         token = token.replace("Bearer ", "");
 
-        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+        Algorithm algorithm = Algorithm.HMAC256(secretKeyCandidate);
 
         try {
             var tokenDecoded = JWT.require(algorithm).build().verify(token);
@@ -33,18 +33,19 @@ public class JWTProvider {
             e.printStackTrace();
             return null;
         }
+
     }
 
-    public AuthCompanyResponseDTO createToken(CompanyEntity company) {
-        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+    public AuthCandidateResponseDTO createTokenCandidate(CandidateEntity candidate) {
+        Algorithm algorithm = Algorithm.HMAC256(secretKeyCandidate);
         var expiresIn = Instant.now().plus(Duration.ofHours(2));
-        var token = JWT.create().withIssuer("GestaoVagas")
+        var token = JWT.create().withIssuer("Javagas")
                 .withExpiresAt(expiresIn)
-                .withSubject(company.getId().toString())
-                .withClaim("roles", Arrays.asList("COMPANY"))
+                .withSubject(candidate.getId().toString())
+                .withClaim("roles", Arrays.asList("CANDIDATE"))
                 .sign(algorithm);
-        var authCompanyResponseDTO = AuthCompanyResponseDTO.builder().access_token(token)
+        var authCandidateResponseDTO = AuthCandidateResponseDTO.builder().access_token(token)
                 .expires_in(expiresIn.toEpochMilli()).build();
-        return authCompanyResponseDTO;
+        return authCandidateResponseDTO;
     }
 }
