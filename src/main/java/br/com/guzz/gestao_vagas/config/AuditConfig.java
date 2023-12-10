@@ -1,4 +1,4 @@
-package br.com.guzz.gestao_vagas.actuator;
+package br.com.guzz.gestao_vagas.config;
 
 import org.springframework.boot.actuate.audit.AuditEventRepository;
 import org.springframework.boot.actuate.audit.InMemoryAuditEventRepository;
