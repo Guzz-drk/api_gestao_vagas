@@ -3,6 +3,7 @@ package br.com.guzz.gestao_vagas.modules.company.controllers;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,22 +35,26 @@ public class JobController {
     @Tag(name = "Vagas", description = "Informações das Vagas")
     @Operation(summary = "Cadastro de Vaga", description = "Essa função é responsável por cadastrar as vagas dentro da empresa")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(
-                schema = @Schema(implementation = JobEntity.class)
-            )
-        })
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = JobEntity.class))
+            })
     })
     @SecurityRequirement(name = "jwt_auth")
-    public JobEntity create(@Valid @RequestBody CreateJobDTO createJobDTO, HttpServletRequest request) {
+    public ResponseEntity<Object> create(@Valid @RequestBody CreateJobDTO createJobDTO, HttpServletRequest request) {
         var companyId = request.getAttribute("company_id");
 
-        var jobEntity = JobEntity.builder()
-                        .description(createJobDTO.getDescription())
-                        .benefits(createJobDTO.getBenefits())
-                        .level(createJobDTO.getLevel())
-                        .companyId(UUID.fromString(companyId.toString()))
-                        .build();
-        return this.createJobUseCase.execute(jobEntity);
+        try {
+            var jobEntity = JobEntity.builder()
+                    .description(createJobDTO.getDescription())
+                    .benefits(createJobDTO.getBenefits())
+                    .level(createJobDTO.getLevel())
+                    .companyId(UUID.fromString(companyId.toString()))
+                    .build();
+            var result = this.createJobUseCase.execute(jobEntity);
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 }
